@@ -78,7 +78,7 @@ def lua_recursive_model(module,seq):
             n = nn.Sigmoid()
             add_submodule(seq,n)
         elif name == 'SpatialMaxPooling':
-            n = nn.MaxPool2d((m.kW,m.kH),(m.dW,m.dH),(m.padW,m.padH),ceil_mode=m.ceil_mode)
+            n = nn.MaxPool2d((m.kW,m.kH),(m.dW,m.dH),(getattr(m,'padW',0),getattr(m,'padH',0)),getattr(m,'ceil_mode',False))
             add_submodule(seq,n)
         elif name == 'SpatialAveragePooling':
             n = nn.AvgPool2d((m.kW,m.kH),(m.dW,m.dH),(m.padW,m.padH),ceil_mode=m.ceil_mode)
@@ -180,7 +180,7 @@ def lua_recursive_source(module):
         elif name == 'Sigmoid':
             s += ['nn.Sigmoid()']
         elif name == 'SpatialMaxPooling':
-            s += ['nn.MaxPool2d({},{},{},ceil_mode={}),#MaxPool2d'.format((m.kW,m.kH),(m.dW,m.dH),(m.padW,m.padH),m.ceil_mode)]
+            s += ['nn.MaxPool2d({},{},{},ceil_mode={}),#MaxPool2d'.format((m.kW,m.kH),(m.dW,m.dH),(getattr(m,'padW',0),getattr(m,'padH',0)),getattr(m,'ceil_mode',False))]
         elif name == 'SpatialAveragePooling':
             s += ['nn.AvgPool2d({},{},{},ceil_mode={}),#AvgPool2d'.format((m.kW,m.kH),(m.dW,m.dH),(m.padW,m.padH),m.ceil_mode)]
         elif name == 'SpatialUpSamplingNearest':
