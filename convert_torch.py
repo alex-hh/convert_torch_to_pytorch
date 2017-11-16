@@ -103,6 +103,9 @@ def lua_recursive_model(module,seq):
             m.inplace = False
             n = nn.Dropout(m.p)
             add_submodule(seq,n)
+        elif name == 'Threshold':
+            n = nn.Threshold(m.threshold, m.value)
+            add_submodule(seq,n)
         elif name == 'SoftMax':
             n = nn.Softmax()
             add_submodule(seq,n)
@@ -192,6 +195,8 @@ def lua_recursive_source(module):
             s += ['nn.Sequential({},{}),#Linear'.format(s1,s2)]
         elif name == 'Dropout':
             s += ['nn.Dropout({})'.format(m.p)]
+        elif name == 'Threshold':
+            s += ['nn.Threshold({},{})'.format(m.threshold, m.value)]
         elif name == 'SoftMax':
             s += ['nn.Softmax()']
         elif name == 'Identity':
